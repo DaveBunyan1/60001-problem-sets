@@ -1,0 +1,61 @@
+# Python cache / bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Pytest cache
+.pytest_cache/
+
+# Temporary / generated files
+*.tmp
+*.log
+*.bak
+*.swp
+*~
+
+# Jupyter Notebook checkpoints (if any)
+.ipynb_checkpoints/
+
+# macOS junk
+.DS_Store
+
+# Windows junk
+Thumbs.db
+
+# VS Code settings (optional)
+.vscode/
+
+# Local environment variables / configs
+.env
+*.env
+
+# Temporary files created during tests
+tmp/
+*.temp
+*.tmp
+
+# Test helper tmp files (like NamedTemporaryFile)
+# You don't need this if you're cleaning manually in tests
+# but it's safe:
+*.tmp*
+
+# Coverage reports (if you use coverage.py)
+htmlcov/
+.coverage
+.coverage.*
+
+# Build artifacts (if packaging later)
+build/
+dist/
+*.egg-info/
+
+# Ignore problem set input/output files if they shouldn’t be committed
+ps*.txt
+*.dat
+*.data
