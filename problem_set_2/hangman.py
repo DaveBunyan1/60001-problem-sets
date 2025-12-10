@@ -12,7 +12,6 @@
 import random
 import string
 from typing import List
-import time
 
 WORDLIST_FILENAME = "words.txt"
 
@@ -102,7 +101,21 @@ def get_available_letters(letters_guessed: List[str]) -> str:
     )
 
 
-def hangman(secret_word):
+def check_guess(guessed_letter: str, letters_guessed: List[str]) -> bool:
+    """
+    Docstring for check_guess
+
+    :param guessed_letter: The letter that was guessed
+    :type guessed_letter: str
+    :param letters_guessed: The current letters that have been guessed
+    :type letters_guessed: List[str]
+    :return: Whether or not the guess is valid
+    :rtype: bool
+    """
+    return guessed_letter.isalpha() and guessed_letter not in letters_guessed
+
+
+def hangman(secret_word: str):
     """
     secret_word: string, the secret word to guess.
 
@@ -128,7 +141,69 @@ def hangman(secret_word):
     Follows the other limitations detailed in the problem write-up.
     """
     # FILL IN YOUR CODE HERE AND DELETE "pass"
-    pass
+    guesses_left: int = 6
+    available_letters: str = string.ascii_lowercase
+    guessed_word: bool = False
+    warnings_left: int = 3
+    letters_guessed: List[str] = []
+
+    vowels: str = "aeiou"
+
+    print("Welcome to the game Hangman!")
+    print(f"I am thinking of a word that is {len(secret_word)} letters long.")
+
+    while guesses_left > 0 and not guessed_word:
+
+        print("-------------")
+        print(f"You have {guesses_left} guesses left.")
+        print("Available letters:", available_letters)
+
+        guessed_letter: str = input("Please guess a letter: ").lower().strip()
+
+        valid_guess: bool = check_guess(guessed_letter, letters_guessed)
+
+        if not valid_guess:
+            if guessed_letter in letters_guessed:
+                msg = "You have already guessed that letter."
+            else:
+                msg = "That is not a valid letter."
+
+            if warnings_left > 0:
+                warnings_left -= 1
+                print(
+                    f"Oops! {msg} You have {warnings_left} warnings left:",
+                    get_guessed_word(secret_word, letters_guessed),
+                )
+            else:
+                guesses_left -= 1
+                print(f"Oops! {msg} You have no warnings left so you lose a guess.")
+            continue
+
+        letters_guessed.append(guessed_letter)
+        available_letters = get_available_letters(letters_guessed)
+        if is_word_guessed(secret_word, letters_guessed):
+            print("------------")
+            print("Congratulations, you won!")
+            print(
+                "Your total score for this game is:",
+                guesses_left * len(set(secret_word)),
+            )
+            break
+        elif guessed_letter in secret_word:
+            print("Good guess:", get_guessed_word(secret_word, letters_guessed))
+        else:
+            print(
+                "Oops! That letter is not in my word:",
+                get_guessed_word(secret_word, letters_guessed),
+            )
+            if guessed_letter in vowels:
+                guesses_left -= 2
+            else:
+                guesses_left -= 1
+
+    if guesses_left <= 0:
+        print("------------")
+        print("Sorry, you ran out of guesses. The word was:", secret_word)
 
 
 # When you've completed your hangman function, scroll down to the bottom
@@ -140,7 +215,7 @@ def hangman(secret_word):
 # -----------------------------------
 
 
-def match_with_gaps(my_word, other_word):
+def match_with_gaps(my_word: str, other_word: str):
     """
     my_word: string with _ characters, current guess of secret word
     other_word: string, regular English word
@@ -153,7 +228,7 @@ def match_with_gaps(my_word, other_word):
     pass
 
 
-def show_possible_matches(my_word):
+def show_possible_matches(my_word: str):
     """
     my_word: string with _ characters, current guess of secret word
     returns: nothing, but should print out every word in wordlist that matches my_word
@@ -167,7 +242,7 @@ def show_possible_matches(my_word):
     pass
 
 
-def hangman_with_hints(secret_word):
+def hangman_with_hints(secret_word: str):
     """
     secret_word: string, the secret word to guess.
 
