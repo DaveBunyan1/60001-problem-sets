@@ -10,6 +10,7 @@
 import math
 import random
 import string
+from typing import Dict
 
 VOWELS = "aeiou"
 CONSONANTS = "bcdfghjklmnpqrstvwxyz"
@@ -131,7 +132,7 @@ def get_word_score(word: str, n: int) -> int:
 #
 # Make sure you understand how this function works and what it does!
 #
-def display_hand(hand):
+def display_hand(hand: Dict[str, int]) -> None:
     """
     Displays the letters currently in the hand.
 
@@ -145,7 +146,7 @@ def display_hand(hand):
     """
 
     for letter in hand.keys():
-        for j in range(hand[letter]):
+        for _ in range(hand[letter]):
             print(letter, end=" ")  # print all on the same line
     print()  # print an empty line
 
@@ -154,7 +155,7 @@ def display_hand(hand):
 # Make sure you understand how this function works and what it does!
 # You will need to modify this for Problem #4.
 #
-def deal_hand(n):
+def deal_hand(n: int) -> Dict[str, int]:
     """
     Returns a random hand containing n lowercase letters.
     ceil(n/3) letters in the hand should be VOWELS (note,
@@ -168,14 +169,14 @@ def deal_hand(n):
     returns: dictionary (string -> int)
     """
 
-    hand = {}
+    hand: Dict[str, int] = {}
     num_vowels = int(math.ceil(n / 3))
 
-    for i in range(num_vowels):
+    for _ in range(num_vowels):
         x = random.choice(VOWELS)
         hand[x] = hand.get(x, 0) + 1
 
-    for i in range(num_vowels, n):
+    for _ in range(num_vowels, n):
         x = random.choice(CONSONANTS)
         hand[x] = hand.get(x, 0) + 1
 
@@ -185,7 +186,7 @@ def deal_hand(n):
 #
 # Problem #2: Update a hand by removing letters
 #
-def update_hand(hand, word):
+def update_hand(hand: Dict[str, int], word: str) -> Dict[str, int]:
     """
     Does NOT assume that hand contains every letter in word at least as
     many times as the letter appears in word. Letters in word that don't
@@ -203,8 +204,16 @@ def update_hand(hand, word):
     hand: dictionary (string -> int)
     returns: dictionary (string -> int)
     """
+    new_hand: Dict[str, int] = hand.copy()
 
-    pass  # TO DO... Remove this line when you implement this function
+    for char in word.lower():
+        if char in new_hand.keys():
+            if new_hand[char] > 1:
+                new_hand[char] -= 1
+            else:
+                del new_hand[char]
+
+    return new_hand
 
 
 #
