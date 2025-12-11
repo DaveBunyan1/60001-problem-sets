@@ -10,7 +10,7 @@
 import math
 import random
 import string
-from typing import Dict
+from typing import Dict, List
 
 VOWELS = "aeiou"
 CONSONANTS = "bcdfghjklmnpqrstvwxyz"
@@ -219,7 +219,7 @@ def update_hand(hand: Dict[str, int], word: str) -> Dict[str, int]:
 #
 # Problem #3: Test word validity
 #
-def is_valid_word(word, hand, word_list):
+def is_valid_word(word: str, hand: Dict[str, int], word_list: List[str]) -> bool:
     """
     Returns True if word is in the word_list and is entirely
     composed of letters in the hand. Otherwise, returns False.
@@ -230,8 +230,18 @@ def is_valid_word(word, hand, word_list):
     word_list: list of lowercase strings
     returns: boolean
     """
+    if word.lower() not in word_list:
+        return False
 
-    pass  # TO DO... Remove this line when you implement this function
+    new_hand: Dict[str, int] = hand.copy()
+    for char in word.lower():
+        in_dict: int = new_hand.get(char, 0)
+        if in_dict == 0:
+            return False
+        else:
+            new_hand[char] -= 1
+
+    return True
 
 
 #
