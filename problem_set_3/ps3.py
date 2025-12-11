@@ -230,16 +230,15 @@ def is_valid_word(word: str, hand: Dict[str, int], word_list: List[str]) -> bool
     word_list: list of lowercase strings
     returns: boolean
     """
+
     if word.lower() not in word_list:
         return False
 
     new_hand: Dict[str, int] = hand.copy()
     for char in word.lower():
-        in_dict: int = new_hand.get(char, 0)
-        if in_dict == 0:
+        if char not in new_hand or new_hand[char] == 0:
             return False
-        else:
-            new_hand[char] -= 1
+        new_hand[char] -= 1
 
     return True
 
