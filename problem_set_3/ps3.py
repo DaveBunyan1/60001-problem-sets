@@ -43,6 +43,7 @@ SCRABBLE_LETTER_VALUES = {
     "x": 8,
     "y": 4,
     "z": 10,
+    "*": 0,
 }
 
 # -----------------------------------
@@ -52,7 +53,7 @@ SCRABBLE_LETTER_VALUES = {
 WORDLIST_FILENAME = "words.txt"
 
 
-def load_words():
+def load_words() -> List[str]:
     """
     Returns a list of valid words. Words are strings of lowercase letters.
 
@@ -64,7 +65,7 @@ def load_words():
     # inFile: file
     inFile = open(WORDLIST_FILENAME, "r")
     # wordlist: list of strings
-    wordlist = []
+    wordlist: List[str] = []
     for line in inFile:
         wordlist.append(line.strip().lower())
     print("  ", len(wordlist), "words loaded.")
@@ -169,8 +170,8 @@ def deal_hand(n: int) -> Dict[str, int]:
     returns: dictionary (string -> int)
     """
 
-    hand: Dict[str, int] = {}
-    num_vowels = int(math.ceil(n / 3))
+    hand: Dict[str, int] = {"*": 1}
+    num_vowels = int(math.ceil(n / 3)) - 1
 
     for _ in range(num_vowels):
         x = random.choice(VOWELS)
@@ -231,12 +232,24 @@ def is_valid_word(word: str, hand: Dict[str, int], word_list: List[str]) -> bool
     returns: boolean
     """
 
-    if word.lower() not in word_list:
-        return False
-
     new_hand: Dict[str, int] = hand.copy()
+
+    if "*" not in word:
+        if word.lower() not in word_list:
+            return False
+    else:
+        possible_word: bool = False
+        for char in VOWELS:
+            new_word = word.lower().replace("*", char)
+            if new_word in word_list:
+                possible_word = True
+
+        if not possible_word:
+
+            return False
+
     for char in word.lower():
-        if char not in new_hand or new_hand[char] == 0:
+        if new_hand.get(char, 0) == 0:
             return False
         new_hand[char] -= 1
 
@@ -395,6 +408,6 @@ def play_game(word_list):
 # Do not remove the "if __name__ == '__main__':" line - this code is executed
 # when the program is run directly, instead of through an import statement
 #
-if __name__ == "__main__":
-    word_list = load_words()
-    play_game(word_list)
+# if __name__ == "__main__":
+#     word_list = load_words()
+#     play_game(word_list)
