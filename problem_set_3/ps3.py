@@ -345,7 +345,7 @@ def play_hand(hand: Dict[str, int], word_list: List[str]) -> int:
 #
 
 
-def substitute_hand(hand, letter):
+def substitute_hand(hand: Dict[str, int], letter: str) -> Dict[str, int]:
     """
     Allow the user to replace all copies of one letter in the hand (chosen by user)
     with a new letter chosen from the VOWELS and CONSONANTS at random. The new letter
@@ -367,11 +367,25 @@ def substitute_hand(hand, letter):
     letter: string
     returns: dictionary (string -> int)
     """
+    if letter not in hand.keys():
+        return hand
 
-    pass  # TO DO... Remove this line when you implement this function
+    substitute_hand: Dict[str, int] = hand.copy()
+
+    letters: List[str] = [
+        letter for letter in string.ascii_lowercase if letter not in hand
+    ]
+
+    substitute_letter: str = random.choice(letters)
+
+    while letter in substitute_hand:
+        substitute_hand[substitute_letter] = substitute_hand[letter]
+        del substitute_hand[letter]
+
+    return substitute_hand
 
 
-def play_game(word_list):
+def play_game(word_list: List[str]) -> int:
     """
     Allow the user to play a series of hands
 
@@ -401,10 +415,39 @@ def play_game(word_list):
 
     word_list: list of lowercase strings
     """
+    substitution_used: bool = False
+    replay_used: bool = False
 
-    print(
-        "play_game not implemented."
-    )  # TO DO... Remove this line when you implement this function
+    total_score: int = 0
+    num_of_hands: int = int(input("Enter total number of hands: "))
+
+    for _ in range(num_of_hands):
+        hand: Dict[str, int] = deal_hand(HAND_SIZE)
+        display_hand(hand)
+        if not substitution_used:
+            if (
+                input("Would you like to substitute a letter? ").strip().lower()
+                == "yes"
+            ):
+                replaced_letter: str = (
+                    input("Which letter would you like to replace: ").strip().lower()
+                )
+                hand = substitute_hand(hand, replaced_letter)
+                substitution_used = True
+
+        hand_score: int = 0
+        replay_hand_score: int = 0
+
+        hand_score = play_hand(hand, word_list)
+        if not replay_used:
+            if input("Would you like to replay the hand? ").strip().lower() == "yes":
+                replay_hand_score = play_hand(hand, word_list)
+                replay_used = True
+
+        total_score += max(hand_score, replay_hand_score)
+
+    print("Total score over all hands:", total_score)
+    return total_score
 
 
 #
@@ -412,6 +455,6 @@ def play_game(word_list):
 # Do not remove the "if __name__ == '__main__':" line - this code is executed
 # when the program is run directly, instead of through an import statement
 #
-# if __name__ == "__main__":
-#     word_list = load_words()
-#     play_game(word_list)
+if __name__ == "__main__":
+    word_list = load_words()
+    play_game(word_list)
